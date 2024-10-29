@@ -174,7 +174,7 @@ vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagn
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
-
+vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 -- TIP: Disable arrow keys in normal mode
 -- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
 -- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
@@ -301,12 +301,12 @@ require("lazy").setup({
 		branch = "harpoon2",
 		dependencies = { "nvim-lua/plenary.nvim" },
 	},
-	-- {
-	-- 	"stevearc/oil.nvim",
-	-- 	opts = {},
-	-- 	-- Optional dependencies
-	-- 	dependencies = { "nvim-tree/nvim-web-devicons" },
-	-- },
+	{
+		"stevearc/oil.nvim",
+		opts = {},
+		-- Optional dependencies
+		dependencies = { "nvim-tree/nvim-web-devicons" },
+	},
 	{ -- Fuzzy Finder (files, lsp, etc)
 		"nvim-telescope/telescope.nvim",
 		event = "VimEnter",
@@ -357,11 +357,11 @@ require("lazy").setup({
 				-- You can put your default mappings / updates / etc. in here
 				--  All the info you're looking for is in `:help telescope.setup()`
 				--
-				-- defaults = {
-				--   mappings = {
-				--     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-				--   },
-				-- },
+				defaults = {
+					mappings = {
+						i = { ["<c-enter>"] = "to_fuzzy_refine" },
+					},
+				},
 				-- pickers = {}
 				extensions = {
 					["ui-select"] = {
@@ -554,8 +554,10 @@ require("lazy").setup({
 			local servers = {
 				-- clangd = {},
 				-- gopls = {},
+				pylsp = {},
 				pyright = {},
 				zls = {},
+				omnisharp = {},
 				-- rust_analyzer = {},
 				-- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
 				--
@@ -761,6 +763,7 @@ require("lazy").setup({
 		--
 		-- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
 		"folke/tokyonight.nvim",
+		opts = { transparent = true },
 		priority = 1000, -- Make sure to load this before all the other start plugins.
 		init = function()
 			-- Load the colorscheme here.
@@ -895,13 +898,16 @@ local harpoon = require("harpoon")
 harpoon:setup()
 
 vim.keymap.set("n", "<leader>f", function()
-	harpoon:list():append()
+	harpoon:list():add()
 end)
 vim.keymap.set("n", "<C-f>", function()
 	harpoon.ui:toggle_quick_menu(harpoon:list())
 end)
 vim.keymap.set("n", "<C-y>", function()
 	harpoon:list():select(1)
+end)
+vim.keymap.set("n", "<C-S-Y>", function()
+	harpoon:list():clear()
 end)
 vim.keymap.set("n", "<C-u>", function()
 	harpoon:list():select(2)
@@ -932,6 +938,11 @@ vim.api.nvim_set_keymap("n", "<leader>d[", "<cmd>lua vim.diagnostic.goto_prev()<
 vim.api.nvim_set_keymap("n", "<leader>d]", "<cmd>lua vim.diagnostic.goto_next()<CR>", { noremap = true, silent = true })
 -- The following command requires plug-ins "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim", and optionally "kyazdani42/nvim-web-devicons" for icon support
 vim.api.nvim_set_keymap("n", "<leader>dd", "<cmd>Telescope diagnostics<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>ff", "<cmd>Telescope find_files<cr>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>fg", "<cmd>Telescope live_grep<cr>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>fh", "<cmd>Telescope help_tags<cr>", { noremap = true, silent = true })
+
 -- If you don't want to use the telescope plug-in but still want to see all the errors/warnings, comment out the telescope line and uncomment this:
 -- vim.api.nvim_set_keymap('n', '<leader>dd', '<cmd>lua vim.diagnostic.setloclist()<CR>', { noremap = true, silent = true })
 -- The line beneath this is called `modeline`. See `:help modeline`
