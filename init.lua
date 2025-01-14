@@ -554,8 +554,9 @@ require("lazy").setup({
 			local servers = {
 				-- clangd = {},
 				-- gopls = {},
-				pylsp = {},
+				-- pylsp = {},
 				pyright = {},
+				-- ruff_lsp = {},
 				zls = {},
 				omnisharp = {},
 				-- rust_analyzer = {},
